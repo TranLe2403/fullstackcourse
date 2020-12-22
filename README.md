@@ -1,5 +1,5 @@
 # fullstackcourse
-Exercises part 0
-- 0.4: shorturl.at/pBJN3 - Add note diagram
-- 0.5: shorturl.at/knrPQ - Note SPA diagram 
-- 0.6: shorturl.at/cvGP9 - Add note SPA diagram
+Exercises part 0 (Diagrams)
+- 0.4: [Add note diagram](shorturl.at/pBJN3)
+- 0.5: [Note SPA diagram](shorturl.at/knrPQ)
+- 0.6: [Add note SPA diagram](shorturl.at/cvGP9)
