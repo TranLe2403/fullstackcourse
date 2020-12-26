@@ -16,7 +16,30 @@ const App = () => {
     });
   }, []);
 
-  const addPerson = (event) => {
+  const updatePhoneNumber = (index) => {
+    const personsCopy = [...persons];
+    const addConfirm = window.confirm(
+      `${personsCopy[index].name} is already added to phonebook, replacethe old number with a new one?`
+    );
+
+    if (!addConfirm) return;
+
+    const changedInfo = {
+      ...personsCopy[index],
+      number: info.number,
+    };
+    personService
+      .updatePersonInfo(personsCopy[index].id, changedInfo)
+      .then((response) => {
+        setPersons(
+          personsCopy.map((note) =>
+            note.id !== personsCopy[index].id ? note : response.data
+          )
+        );
+      });
+  };
+
+  const handleClickAdd = (event) => {
     event.preventDefault();
     const nameObject = {
       name: info.name,
@@ -28,15 +51,16 @@ const App = () => {
       (person) => person.name === nameObject.name
     );
 
-    if (availableNameIndex > -1) {
-      window.alert(`${nameObject.name} is already added to phonebook`);
+    if (availableNameIndex === -1) {
+      personService.addPerson(nameObject).then((returnedPerson) => {
+        setPersons(personsCopy.concat(returnedPerson));
+        setInfo({ name: "", number: "" });
+      });
+
       return;
     }
 
-    personService.addPerson(nameObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setInfo({ name: "", number: "" });
-    });
+    updatePhoneNumber(availableNameIndex);
   };
 
   const handleNumberChange = (event) => {
@@ -51,20 +75,37 @@ const App = () => {
     setSearchName(event.target.value);
   };
 
+  const deletePersonHandler = (id) => {
+    const findPersonIndex = persons.findIndex((person) => person.id === id);
+    const deleteConfirm = window.confirm(
+      `Delete ${persons[findPersonIndex].name}?`
+    );
+    if (!deleteConfirm) return;
+    personService.deletePerson(id).then(() => {
+      const copyPersons = [...persons];
+      copyPersons.splice(findPersonIndex, 1);
+      setPersons(copyPersons);
+    });
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter searchName={searchName} handleSearchChange={handleSearchChange} />
       <h3>Add a new</h3>
       <PersonForm
-        addPerson={addPerson}
+        handleClickAdd={handleClickAdd}
         name={info.name}
         number={info.number}
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} searchName={searchName} />
+      <Persons
+        persons={persons}
+        searchName={searchName}
+        deletePersonHandler={deletePersonHandler}
+      />
     </div>
   );
 };

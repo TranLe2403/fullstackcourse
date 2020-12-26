@@ -1,6 +1,6 @@
 import React from "react";
 
-const Persons = ({ persons, searchName }) => {
+const Persons = ({ persons, searchName, deletePersonHandler }) => {
   return (
     <div>
       {persons
@@ -10,6 +10,9 @@ const Persons = ({ persons, searchName }) => {
         .map((person) => (
           <p key={person.number}>
             {person.name} {person.number}
+            <button onClick={() => deletePersonHandler(person.id)}>
+              Delete
+            </button>
           </p>
         ))}
     </div>
