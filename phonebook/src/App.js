@@ -4,17 +4,26 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personService from "./services/notes";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [info, setInfo] = useState({ name: "", number: "" });
   const [searchName, setSearchName] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService.getAllPersons().then((allPersons) => {
       setPersons(allPersons);
     });
   }, []);
+
+  const handleSetMessage = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 3000);
+  };
 
   const updatePhoneNumber = (index) => {
     const personsCopy = [...persons];
@@ -36,6 +45,16 @@ const App = () => {
             note.id !== personsCopy[index].id ? note : response.data
           )
         );
+        setInfo({ name: "", number: "" });
+        handleSetMessage(
+          `${personsCopy[index].name}'s has changed successfully!`
+        );
+      })
+      .catch((_) => {
+        handleSetMessage(
+          `Information of ${personsCopy[index].name}'s has already been removed from server!`
+        );
+        setPersons(personsCopy.filter((n) => n.id !== personsCopy[index].id));
       });
   };
 
@@ -54,6 +73,7 @@ const App = () => {
     if (availableNameIndex === -1) {
       personService.addPerson(nameObject).then((returnedPerson) => {
         setPersons(personsCopy.concat(returnedPerson));
+        handleSetMessage(`Added ${info.name}`);
         setInfo({ name: "", number: "" });
       });
 
@@ -91,6 +111,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter searchName={searchName} handleSearchChange={handleSearchChange} />
       <h3>Add a new</h3>
       <PersonForm
