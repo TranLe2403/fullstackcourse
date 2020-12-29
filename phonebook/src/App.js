@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import personService from "./services/notes";
+import personService from "./services/persons";
 import Notification from "./components/Notification";
 
 const App = () => {
@@ -41,8 +41,8 @@ const App = () => {
       .updatePersonInfo(personsCopy[index].id, changedInfo)
       .then((response) => {
         setPersons(
-          personsCopy.map((note) =>
-            note.id !== personsCopy[index].id ? note : response.data
+          personsCopy.map((person) =>
+            person.id !== personsCopy[index].id ? person : response.data
           )
         );
         setInfo({ name: "", number: "" });
@@ -72,7 +72,7 @@ const App = () => {
 
     if (availableNameIndex === -1) {
       personService.addPerson(nameObject).then((returnedPerson) => {
-        setPersons(personsCopy.concat(returnedPerson));
+        setPersons(returnedPerson);
         handleSetMessage(`Added ${info.name}`);
         setInfo({ name: "", number: "" });
       });
