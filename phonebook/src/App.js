@@ -72,7 +72,8 @@ const App = () => {
 
     if (availableNameIndex === -1) {
       personService.addPerson(nameObject).then((returnedPerson) => {
-        setPersons(returnedPerson);
+        const allPersons = personsCopy.concat(returnedPerson);
+        setPersons(allPersons);
         handleSetMessage(`Added ${info.name}`);
         setInfo({ name: "", number: "" });
       });
