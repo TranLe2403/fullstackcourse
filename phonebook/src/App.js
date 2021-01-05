@@ -70,18 +70,23 @@ const App = () => {
       (person) => person.name === nameObject.name
     );
 
-    if (availableNameIndex === -1) {
-      personService.addPerson(nameObject).then((returnedPerson) => {
+    if (availableNameIndex > -1) {
+      updatePhoneNumber(availableNameIndex);
+      return;
+    }
+
+    personService
+      .addPerson(nameObject)
+      .then((returnedPerson) => {
         const allPersons = personsCopy.concat(returnedPerson);
         setPersons(allPersons);
         handleSetMessage(`Added ${info.name}`);
         setInfo({ name: "", number: "" });
+      })
+      .catch((err) => {
+        handleSetMessage(err.response.data.error);
       });
 
-      return;
-    }
-
-    updatePhoneNumber(availableNameIndex);
   };
 
   const handleNumberChange = (event) => {

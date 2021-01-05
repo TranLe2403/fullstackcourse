@@ -5,8 +5,9 @@ const Notification = ({ message }) => {
     return null;
   }
   const isError =
-    message !== null &&
-    message.includes("has already been removed from server");
+    (message !== null &&
+      message.includes("has already been removed from server")) ||
+    message.includes("validation failed");
   const messageStyle = {
     color: isError ? "red" : "green",
     background: "lightgrey",
